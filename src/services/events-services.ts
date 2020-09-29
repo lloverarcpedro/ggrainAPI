@@ -1,9 +1,12 @@
 import Client, { ChaincodeEvent } from 'fabric-client'
 import { putMQMessage } from './mq-services'
+import dotEnv from 'dotenv'
+
+dotEnv.config() //Enable environment variables read.
 
 const CONNECTION_PROFILE_PATH = '/Users/pedrollovera/Documents/GCAPI/src/controllers/profiles/dev-harvx-connection.json'
 const GRAINCHAIN_CLIENT_CONNECTION_PROFILE_PATH = '/Users/pedrollovera/Documents/GCAPI/src/controllers/profiles/dev-client-connection.json'
-const eventPeer = process.env.DEFAULT_EVENTS_PEER?.toString() ?? ''
+const eventPeer = process.env.DEFAULT_EVENTS_PEER ?? ''
 
 async function setupEvents(): Promise<void> {
     try {
