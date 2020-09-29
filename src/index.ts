@@ -5,10 +5,7 @@ import mongoose from 'mongoose'
 import dotEnv from 'dotenv'
 import bodyParser from 'body-parser'
 import routes from './routes/index'
-import Client, { ChaincodeEvent } from 'fabric-client'
-
-const CONNECTION_PROFILE_PATH = '/Users/pedrollovera/Documents/GCAPI/src/controllers/profiles/dev-harvx-connection.json'
-const GRAINCHAIN_CLIENT_CONNECTION_PROFILE_PATH = '/Users/pedrollovera/Documents/GCAPI/src/controllers/profiles/dev-client-connection.json'
+import { setupEvents } from './services/events-services'
 
 dotEnv.config() //Enable environment variables read.
 
@@ -43,45 +40,9 @@ mongoose
         console.log('Connection Error', error)
     })
 
-//Register for events
+//Register for chaincode events
 setupEvents()
 
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`)
 })
-
-async function setupEvents() {
-    const client = Client.loadFromConfig(CONNECTION_PROFILE_PATH)
-    client.loadFromConfig(GRAINCHAIN_CLIENT_CONNECTION_PROFILE_PATH)
-    await client.initCredentialStores()
-        .then(() => {
-            console.log('credentials init ok')
-        })
-    const userContext = await client.loadUserFromStateStore('admin')
-    await client.setUserContext(userContext)
-    const channel = client.getChannel('grainchainchannel')
-    //client.loadFromConfig(GRAINCHAIN_CLIENT_CONNECTION_PROFILE_PATH)
-    const channelHub = channel.newChannelEventHub('peer1.grainchain.io')
-
-    channelHub.registerChaincodeEvent('gocc', 'loadAdded', loadAddedCallback)
-    channelHub.connect({ full_block: false }, (err, status) => {
-        if (err) {
-            console.log(err.message)
-        } else {
-            console.log('Status: ', status)
-        }
-    })
-
-}
-
-function loadAddedCallback(event: ChaincodeEvent, blockNumber?: number | undefined, txId?: string | undefined, txStatus?: string | undefined) {
-    if (event) {
-        console.log('Load Added Event Callback Triggered: ', event.payload) 
-        console.log('Load Added Event Callback Triggered: ', event.event_name)
-        console.log('Load Added Event Callback Triggered: ', event.tx_id)
-        console.log('Load Added Event Callback Triggered: ', event.chaincode_id)
-        console.log('Load Added Event Callback Triggered: ', txStatus)
-    } else {
-        console.log('event error, empty')
-    }
-}
