@@ -1,0 +1,18 @@
+{
+    "name": "grainchain Client",
+    "version": "1.0",
+    "client": {
+        "organization": "grainchain",
+        "credentialStore": {
+            "path": "/Users/pedrollovera/Documents/GCAPI/wallet/admin",
+            "cryptoStore": {
+                "path": "/Users/pedrollovera/Documents/GCAPI/wallet/admin"
+            }
+        },
+        "connection": {
+            "options": {
+                "grpc.keepalive_time_ms": 120000
+            }
+        }
+    }
+}
