@@ -56,7 +56,7 @@ const  createValidation = (): ValidationChain[] => {
         //password length min 5
         body('password', 'password min length is 5').isLength({ min: 5 }),
         //data is Json
-        body('data').isJSON(),
+        //body('data').isJSON(),
         //data  age validationd
         body('data.age').notEmpty(),
         //data is male validation

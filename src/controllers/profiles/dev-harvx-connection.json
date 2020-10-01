@@ -22,6 +22,48 @@
                     "ledgerQuery":true, 
                     "eventSource":true, 
                     "discover":true
+                },
+                "peer2.grainchain.io": {
+                    "endorsingPeer":true,
+                    "chaincodeQuery":true,
+                    "ledgerQuery":true, 
+                    "eventSource":true, 
+                    "discover":true
+                },
+                "peer1.commodity.io": {
+                    "endorsingPeer":true,
+                    "chaincodeQuery":true,
+                    "ledgerQuery":true, 
+                    "eventSource":true, 
+                    "discover":true
+                },
+                "peer2.commodity.io": {
+                    "endorsingPeer":true,
+                    "chaincodeQuery":true,
+                    "ledgerQuery":true, 
+                    "eventSource":true, 
+                    "discover":true
+                },
+                "peer3.commodity.io": {
+                    "endorsingPeer":true,
+                    "chaincodeQuery":true,
+                    "ledgerQuery":true, 
+                    "eventSource":true, 
+                    "discover":true
+                },
+                "peer1.silosys.io": {
+                    "endorsingPeer":true,
+                    "chaincodeQuery":true,
+                    "ledgerQuery":true, 
+                    "eventSource":true, 
+                    "discover":true
+                },
+                "peer2.silosys.io": {
+                    "endorsingPeer":true,
+                    "chaincodeQuery":true,
+                    "ledgerQuery":true, 
+                    "eventSource":true, 
+                    "discover":true
                 }
             }
         }
@@ -29,7 +71,17 @@
     "organizations": {
         "grainchain": {
             "mspid": "GrainchainMSP",
-            "peers": ["peer1.grainchain.io"],
+            "peers": ["peer1.grainchain.io","peer2.grainchain.io"],
+            "certificateAuthorities": ["cert-auth.grainchain.io"]
+        },
+        "commodity": {
+            "mspid": "CommodityMSP",
+            "peers": ["peer1.commodity.io","peer2.commodity.io","peer3.commodity.io"],
+            "certificateAuthorities": ["cert-auth.grainchain.io"]
+        },
+        "silosys": {
+            "mspid": "SilosysMSP",
+            "peers": ["peer1.silosys.io","peer2.silosys.io"],
             "certificateAuthorities": ["cert-auth.grainchain.io"]
         }
     },
@@ -41,6 +93,12 @@
     "peers": {
         "peer1.grainchain.io": {
             "url": "grpc://localhost:7051"
+        },
+        "peer1.commodity.io": {
+            "url": "grpc://localhost:9051"
+        },
+        "peer1.silosys.io": {
+            "url": "grpc://localhost:12051"
         }
     },
     "certificateAuthorities": {

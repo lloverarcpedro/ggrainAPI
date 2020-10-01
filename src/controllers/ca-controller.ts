@@ -1,4 +1,4 @@
-import FabricCAServices from 'fabric-ca-client'
+import FabricCAServices, { IKeyValueAttribute } from 'fabric-ca-client'
 import { User } from 'fabric-client'
 import { FileSystemWallet, X509WalletMixin, Gateway } from 'fabric-network'
 import { Request, Response } from 'express'
@@ -52,7 +52,7 @@ const enrollAdmin = async (req: Request, res: Response) => {
 
 const enrollUser = async (req: Request, res: Response) => {
     try {
-        const { username, email, password, role, affiliation } = req.body
+        const { username, email, password, role, affiliation, mspID } = req.body
         console.log('Enrolling new user', email)
 
         // Check to see if we've already enrolled the admin user.
@@ -85,7 +85,9 @@ const enrollUser = async (req: Request, res: Response) => {
 
         const adminIdentity = gateway.getCurrentIdentity()
         try{
-            const secret = await caConnect.register({ affiliation: affiliation, enrollmentID: email, role: role ?? 'user', enrollmentSecret: password, maxEnrollments: -1 }, adminIdentity)
+            const attributes : IKeyValueAttribute[] = [{name:'gc.area',value:'operative',ecert:true},{name:'hf.departure',value:'homelocation',ecert:true}]
+            console.log('Attributes created: ', attributes.toString())
+            const secret = await caConnect.register({ affiliation: affiliation, enrollmentID: email, role: role ?? 'user', enrollmentSecret: password, maxEnrollments: -1,attrs:attributes }, adminIdentity)
             if (!secret) {
                 throw new Error(`${email} enrollement error`)
             }
@@ -94,7 +96,7 @@ const enrollUser = async (req: Request, res: Response) => {
             console.log(error.message)
         }
         const enrollment = await ca.enroll({ enrollmentID: email, enrollmentSecret: password })
-        const mspID = affiliation == 'orderer' ? 'OrdererMSP' : 'GrainchainMSP'
+        //const mspID = affiliation == 'orderer' ? 'OrdererMSP' : 'GrainchainMSP' : 'SilosysMSP' : 'CommodityMSP'
         const identity = X509WalletMixin.createIdentity(mspID, enrollment.certificate, enrollment.key.toBytes())
         wallet.import(email, identity)
         console.log(`Successfully enrolled ${email} user and imported it into the wallet`)

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { addLoadToContract, getLoadById } from '../services/loads-services'
+import { addLoadToContract, getLoadById, getPrivateLoad } from '../services/loads-services'
 import { Request, Response } from 'express'
 
 
@@ -38,5 +38,21 @@ const getLoad = async (req: Request, res: Response) => {
     }
 }
 
+const getPrivLoad = async (req: Request, res: Response) => {
+    try {
+        const loadId = req.params.loadId
+        const result = await getPrivateLoad(req, loadId)
+        res.send({
+            status: 'OK',
+            data: result
+        })
+    } catch (error) {
+        res.status(500).send({
+            status: 'error',
+            message: `An Error occurred: ${error.message}`
+        })
+    }
+}
 
-export default { addLoad, getLoad }
+
+export default { addLoad, getLoad, getPrivLoad }

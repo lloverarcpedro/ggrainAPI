@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.post('/addLoadToContract', isAuth, addLoadToContractValidator(), validate, loadController.addLoad)
 router.get('/getLoad/:contractId/:loadId', isAuth, loadController.getLoad)
+router.get('/getPrivateLoad/:loadId',isAuth, loadController.getPrivLoad)
 
 
 export default router
