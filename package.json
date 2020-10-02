@@ -23,7 +23,7 @@
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
     "fabric-ca-client": "~1.4.0",
-    "fabric-client": "^1.4.0",
+    "fabric-client": "^1.4.13",
     "fabric-network": "^1.4.12",
     "fs": "0.0.1-security",
     "grpc": "^1.24.3",

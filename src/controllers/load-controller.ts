@@ -41,7 +41,8 @@ const getLoad = async (req: Request, res: Response) => {
 const getPrivLoad = async (req: Request, res: Response) => {
     try {
         const loadId = req.params.loadId
-        const result = await getPrivateLoad(req, loadId)
+        const contractId = req.params.contractId
+        const result = await getPrivateLoad(req, contractId, loadId)
         res.send({
             status: 'OK',
             data: result

@@ -48,6 +48,32 @@ const getContractById = async (req: Request, contractId: string): Promise<string
     }
 }
 
+const putContract = async (req: Request): Promise<string> => {
+    try {
+        const { cStatus, contractId } = req.body
+        USER_ID = req.sessionData.email
+        console.log('Query exectuted as: ', USER_ID)
+        //get chaincode contract from gateway services
+        const contract = await getContract(NETWORK_NAME, CONTRACT_ID, USER_ID, CONTRACT_NAME)
+        const responseSubmit = await contract.submitTransaction('putContract', contractId, cStatus)
+        console.log('Submit Response=', responseSubmit.toString())
+        const txn = contract.createTransaction('putContract')
+        txn.addCommitListener(commitCallback)
+
+        const response = await txn.submit(contractId, cStatus)
+        console.log('Transaction.submit()=', response.toString())
+        // Get the txn ID
+        const txnID = txn.getTransactionID().getTransactionID()
+        console.log('Transaction ID: ', txnID)
+        return JSON.parse(`{"txnId":"${txnID}"}`)
+
+
+    } catch (error) {
+        console.log(error)
+        return JSON.parse(`{"error":"${error}"}`)
+    }
+}
+
 /**
  * Submit the transaction
  * @param {object} contract 
@@ -60,7 +86,7 @@ async function submitTxnContract(contract: Contract, contractId: string, buyerId
         return response.toString()
     } catch (e) {
         // fabric-network.TimeoutError
-        console.log('ERROR: ',e)
+        console.log('ERROR: ', e)
         return e.message
     }
 }
@@ -78,7 +104,7 @@ async function submitTxnTransaction(contract: Contract, contractId: string, buye
 
     // Get the txn ID
     const txnID = txn.getTransactionID().getTransactionID()
-    console.log('Transaction Name: ',txn.getName().toString())
+    console.log('Transaction Name: ', txn.getName().toString())
     txn.addCommitListener(commitCallback)
     // Submit the transaction
     try {
@@ -91,17 +117,17 @@ async function submitTxnTransaction(contract: Contract, contractId: string, buye
     }
 }
 
-async function commitCallback(error: Error, transactionId?: string | undefined, status?: string | undefined,  blockNumber?: string | undefined){
-    if(!error){
+async function commitCallback(error: Error, transactionId?: string | undefined, status?: string | undefined, blockNumber?: string | undefined) {
+    if (!error) {
         const txnId = transactionId ?? ''
         const txnStatus = status ?? ''
         const txnBlockNumber = blockNumber ?? ''
-        console.log('Transaction is now Commited TX: ',txnId)
-        console.log('Transaction status: ',txnStatus)
+        console.log('Transaction is now Commited TX: ', txnId)
+        console.log('Transaction status: ', txnStatus)
         console.log('Transaction block Number commited', txnBlockNumber)
-    }else{
+    } else {
         console.log('Transacciont commit Error', error.message)
     }
 }
 
-export { getContractById, invokeContract }
+export { getContractById, invokeContract, putContract }

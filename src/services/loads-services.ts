@@ -49,13 +49,13 @@ const getLoadById = async (req: Request, contractId: string, loadId: string): Pr
     }
 }
 
-const getPrivateLoad = async (req: Request, loadId: string): Promise<string> => {
+const getPrivateLoad = async (req: Request, contractId: string, loadId: string): Promise<string> => {
     try{
         USER_ID = req.sessionData.email
         //get chaincode contract from gateway services
         const contract = await getContract(NETWORK_NAME, CONTRACT_ID, USER_ID, CONTRACT_NAME)
         //query the contract
-        const response = await contract.evaluateTransaction('getPrivateLoad', loadId)
+        const response = await contract.evaluateTransaction('getPrivateLoad',contractId, loadId)
         console.log(`Private Query Response=${response.toString()}`)
         return JSON.parse(response.toString())
 

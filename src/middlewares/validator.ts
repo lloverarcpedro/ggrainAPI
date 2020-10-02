@@ -27,11 +27,20 @@ const addContractValidator = (): ValidationChain[] => {
 
 }
 
+const updateContractValidator = (): ValidationChain[] => {
+    return [
+        // ContractID not empty
+        body('contractId').notEmpty(),
+        //buyerID not Empty
+        body('status').notEmpty()
+    ]
+}
+
 const addLoadToContractValidator = (): ValidationChain[] => {
 
     return [
         // ContractID not empty
-        body('contractId','ContractId is required').notEmpty(),
+        body('contractId', 'ContractId is required').notEmpty(),
         //buyerID not Empty
         body('loadId').notEmpty(),
         //maxWeight not Empty
@@ -46,7 +55,7 @@ const addLoadToContractValidator = (): ValidationChain[] => {
 
 }
 
-const  createValidation = (): ValidationChain[] => {
+const createValidation = (): ValidationChain[] => {
     return [// email format
         body('email').isEmail(),
         //username
@@ -80,6 +89,7 @@ const validate = (req: Request, res: Response, next: NextFunction): unknown => {
 export {
     loginValidation,
     createValidation,
+    updateContractValidator,
     addContractValidator,
     addLoadToContractValidator,
     validate,

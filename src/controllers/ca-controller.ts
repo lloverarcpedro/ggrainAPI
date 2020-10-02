@@ -85,7 +85,7 @@ const enrollUser = async (req: Request, res: Response) => {
 
         const adminIdentity = gateway.getCurrentIdentity()
         try{
-            const attributes : IKeyValueAttribute[] = [{name:'gc.area',value:'operative',ecert:true},{name:'hf.departure',value:'homelocation',ecert:true}]
+            const attributes : IKeyValueAttribute[] = [{name:'gc.area',value:'operative',ecert:true},{name:'gc.departure',value:'homelocation',ecert:true},{name:'gc.affiliation',value:affiliation,ecert:true}]
             console.log('Attributes created: ', attributes.toString())
             const secret = await caConnect.register({ affiliation: affiliation, enrollmentID: email, role: role ?? 'user', enrollmentSecret: password, maxEnrollments: -1,attrs:attributes }, adminIdentity)
             if (!secret) {
