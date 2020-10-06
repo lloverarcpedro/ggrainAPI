@@ -10,4 +10,5 @@ const load_controller_1 = __importDefault(require("../controllers/load-controlle
 const router = express_1.default.Router();
 router.post('/addLoadToContract', auth_1.isAuth, validator_1.addLoadToContractValidator(), validator_1.validate, load_controller_1.default.addLoad);
 router.get('/getLoad/:contractId/:loadId', auth_1.isAuth, load_controller_1.default.getLoad);
+router.get('/getPrivateLoad/:contractId/:loadId', auth_1.isAuth, load_controller_1.default.getPrivLoad);
 exports.default = router;

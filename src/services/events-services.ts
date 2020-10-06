@@ -25,7 +25,7 @@ async function setupEvents(): Promise<void> {
         //client.loadFromConfig(GRAINCHAIN_CLIENT_CONNECTION_PROFILE_PATH)
         const channelHub = channel.newChannelEventHub(eventPeer)
 
-        channelHub.registerChaincodeEvent('gocc', 'loadAdded', loadAddedCallback) //TODO change to receive any type of event from chaincode name x
+        channelHub.registerChaincodeEvent('gocc', 'contractAdded', eReceiverCallback) //TODO change to receive any type of event from chaincode name x
         channelHub.connect({ full_block: false }, (err, status) => {
             if (err) {
                 throw err
@@ -39,13 +39,13 @@ async function setupEvents(): Promise<void> {
 
 }
 
-function loadAddedCallback(event: ChaincodeEvent, blockNumber?: number | undefined, txId?: string | undefined, txStatus?: string | undefined) {
+function eReceiverCallback(event: ChaincodeEvent, blockNumber?: number | undefined, txId?: string | undefined, txStatus?: string | undefined) {
     if (event) {
-        console.log('Load Added Event Callback Triggered: ', event.payload)
-        console.log('Load Added Event Callback Triggered: ', event.event_name)
-        console.log('Load Added Event Callback Triggered: ', event.tx_id)
-        console.log('Load Added Event Callback Triggered: ', event.chaincode_id)
-        console.log('Load Added Event Callback Triggered: ', txStatus)
+        console.log('Event Callback Triggered: ', event.payload)
+        console.log('Event Callback Triggered: ', event.event_name)
+        console.log('Callback Triggered: ', event.tx_id)
+        console.log('Event Callback Triggered: ', event.chaincode_id)
+        console.log('Event Callback Triggered: ', txStatus)
         const eventSent = putMQMessage(`ChaincodeID: ${event.chaincode_id}, EventName: ${event.event_name}  Status:${txStatus}`, 'gcbc') // @message: string, @channel: RabitMQ-QueueName
         console.log(eventSent)
     } else {

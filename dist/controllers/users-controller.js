@@ -26,7 +26,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const equalP = yield bcrypt_1.default.compare(password, user.password);
             console.log(equalP);
             if (equalP) {
-                const token = jsonwebtoken_1.default.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: 60000 } //time in seconds
+                const token = jsonwebtoken_1.default.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: 600 } //time in seconds
                 );
                 res.send({ status: 'OK', data: { token, expiresIn: '10 mins' } });
             }

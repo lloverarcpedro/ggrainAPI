@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.addLoadToContractValidator = exports.addContractValidator = exports.createValidation = exports.loginValidation = void 0;
+exports.validate = exports.deleteOwnerValidator = exports.deleteViewerValidator = exports.updateViewerValidator = exports.updateOwnerValidator = exports.addLoadToContractValidator = exports.addContractValidator = exports.updateContractValidator = exports.createValidation = exports.loginValidation = void 0;
 const express_validator_1 = require("express-validator");
 const loginValidation = () => {
     return [
@@ -24,6 +24,51 @@ const addContractValidator = () => {
     ];
 };
 exports.addContractValidator = addContractValidator;
+const updateContractValidator = () => {
+    return [
+        // ContractID not empty
+        express_validator_1.body('contractId').notEmpty(),
+        //buyerID not Empty
+        express_validator_1.body('status').notEmpty()
+    ];
+};
+exports.updateContractValidator = updateContractValidator;
+const updateOwnerValidator = () => {
+    return [
+        // ContractID not empty
+        express_validator_1.body('contractId').notEmpty(),
+        //newOwner ID not Empty
+        express_validator_1.body('newOwnerId').notEmpty()
+    ];
+};
+exports.updateOwnerValidator = updateOwnerValidator;
+const updateViewerValidator = () => {
+    return [
+        // ContractID not empty
+        express_validator_1.body('contractId').notEmpty(),
+        //newViewer ID not Empty
+        express_validator_1.body('newViewerId').notEmpty()
+    ];
+};
+exports.updateViewerValidator = updateViewerValidator;
+const deleteViewerValidator = () => {
+    return [
+        // ContractID not empty
+        express_validator_1.body('contractId').notEmpty(),
+        //Viewer ID not Empty
+        express_validator_1.body('viewerId').notEmpty()
+    ];
+};
+exports.deleteViewerValidator = deleteViewerValidator;
+const deleteOwnerValidator = () => {
+    return [
+        // ContractID not empty
+        express_validator_1.body('contractId').notEmpty(),
+        //Owner ID not Empty
+        express_validator_1.body('ownerId').notEmpty()
+    ];
+};
+exports.deleteOwnerValidator = deleteOwnerValidator;
 const addLoadToContractValidator = () => {
     return [
         // ContractID not empty
@@ -51,7 +96,7 @@ const createValidation = () => {
         //password length min 5
         express_validator_1.body('password', 'password min length is 5').isLength({ min: 5 }),
         //data is Json
-        express_validator_1.body('data').isJSON(),
+        //body('data').isJSON(),
         //data  age validationd
         express_validator_1.body('data.age').notEmpty(),
         //data is male validation

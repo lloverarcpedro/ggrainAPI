@@ -36,6 +36,42 @@ const updateContractValidator = (): ValidationChain[] => {
     ]
 }
 
+const updateOwnerValidator = (): ValidationChain[] => {
+    return [
+        // ContractID not empty
+        body('contractId').notEmpty(),
+        //newOwner ID not Empty
+        body('newOwnerId').notEmpty()
+    ]
+}
+
+const updateViewerValidator = (): ValidationChain[] => {
+    return [
+        // ContractID not empty
+        body('contractId').notEmpty(),
+        //newViewer ID not Empty
+        body('newViewerId').notEmpty()
+    ]
+}
+
+const deleteViewerValidator = () : ValidationChain[] => {
+    return [
+        // ContractID not empty
+        body('contractId').notEmpty(),
+        //Viewer ID not Empty
+        body('viewerId').notEmpty()
+    ]
+}
+
+const deleteOwnerValidator = () : ValidationChain[] => {
+    return [
+        // ContractID not empty
+        body('contractId').notEmpty(),
+        //Owner ID not Empty
+        body('ownerId').notEmpty()
+    ]
+}
+
 const addLoadToContractValidator = (): ValidationChain[] => {
 
     return [
@@ -92,5 +128,9 @@ export {
     updateContractValidator,
     addContractValidator,
     addLoadToContractValidator,
+    updateOwnerValidator,
+    updateViewerValidator,
+    deleteViewerValidator,
+    deleteOwnerValidator,
     validate,
 }

@@ -77,7 +77,7 @@ const enrollAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const enrollUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { username, email, password, role, affiliation } = req.body;
+        const { username, email, password, role, affiliation, mspID } = req.body;
         console.log('Enrolling new user', email);
         // Check to see if we've already enrolled the admin user.
         const adminExists = yield wallet.exists('admin');
@@ -102,7 +102,9 @@ const enrollUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const ca = gateway.getClient().getCertificateAuthority();
         const adminIdentity = gateway.getCurrentIdentity();
         try {
-            const secret = yield caConnect.register({ affiliation: affiliation, enrollmentID: email, role: role !== null && role !== void 0 ? role : 'user', enrollmentSecret: password, maxEnrollments: -1 }, adminIdentity);
+            const attributes = [{ name: 'gc.area', value: 'operative', ecert: true }, { name: 'gc.departure', value: 'homelocation', ecert: true }, { name: 'gc.affiliation', value: affiliation, ecert: true }];
+            console.log('Attributes created: ', attributes.toString());
+            const secret = yield caConnect.register({ affiliation: affiliation, enrollmentID: email, role: role !== null && role !== void 0 ? role : 'user', enrollmentSecret: password, maxEnrollments: -1, attrs: attributes }, adminIdentity);
             if (!secret) {
                 throw new Error(`${email} enrollement error`);
             }
@@ -112,7 +114,7 @@ const enrollUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             console.log(error.message);
         }
         const enrollment = yield ca.enroll({ enrollmentID: email, enrollmentSecret: password });
-        const mspID = affiliation == 'orderer' ? 'OrdererMSP' : 'GrainchainMSP';
+        //const mspID = affiliation == 'orderer' ? 'OrdererMSP' : 'GrainchainMSP' : 'SilosysMSP' : 'CommodityMSP'
         const identity = fabric_network_1.X509WalletMixin.createIdentity(mspID, enrollment.certificate, enrollment.key.toBytes());
         wallet.import(email, identity);
         console.log(`Successfully enrolled ${email} user and imported it into the wallet`);

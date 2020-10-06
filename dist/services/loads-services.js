@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addLoadToContract = exports.getLoadById = void 0;
+exports.getPrivateLoad = exports.addLoadToContract = exports.getLoadById = void 0;
 const gateway_services_1 = require("./gateway-services");
 // Identity context used
 let USER_ID = '';
@@ -20,18 +20,18 @@ const CONTRACT_ID = 'gocc1';
 //Chaincode contract name
 const CONTRACT_NAME = 'loadsContract';
 const addLoadToContract = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const { contractId, loadId, commodityId, weight, sellerId, moisture } = req.body;
+    const { contractId, loadId, commodityId, weight, sellerId, moisture, price } = req.body;
     USER_ID = req.sessionData.email;
     //1 get contract from gateway services
     const contract = yield gateway_services_1.getContract(NETWORK_NAME, CONTRACT_ID, USER_ID, CONTRACT_NAME);
     // 4. Execute the transaction
-    const contractSubmit = yield submitTxnContract(contract, contractId, loadId, commodityId, weight, sellerId, moisture);
+    const contractSubmit = yield submitTxnContract(contract, contractId, loadId, commodityId, weight, sellerId, moisture, price);
     if (contractSubmit.toString().startsWith('ERROR:')) {
         throw Error(contractSubmit.toString());
     }
     // Must give delay or use await here otherwise Error=MVCC_READ_CONFLICT
     // 5. submitTxnTransaction
-    return yield submitTxnTransaction(contract, contractId, loadId, commodityId, weight, sellerId, moisture);
+    return yield submitTxnTransaction(contract, contractId, loadId, commodityId, weight, sellerId, moisture, price);
 });
 exports.addLoadToContract = addLoadToContract;
 const getLoadById = (req, contractId, loadId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,15 +50,31 @@ const getLoadById = (req, contractId, loadId) => __awaiter(void 0, void 0, void 
     }
 });
 exports.getLoadById = getLoadById;
+const getPrivateLoad = (req, contractId, loadId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        USER_ID = req.sessionData.email;
+        //get chaincode contract from gateway services
+        const contract = yield gateway_services_1.getContract(NETWORK_NAME, CONTRACT_ID, USER_ID, CONTRACT_NAME);
+        //query the contract
+        const response = yield contract.evaluateTransaction('getPrivateLoad', contractId, loadId);
+        console.log(`Private Query Response=${response.toString()}`);
+        return JSON.parse(response.toString());
+    }
+    catch (error) {
+        console.log(error);
+        return JSON.parse(`{"error":"${error.message}"}`);
+    }
+});
+exports.getPrivateLoad = getPrivateLoad;
 /**
  * Submit the transaction
  * @param {object} contract
  */
-function submitTxnContract(contract, contractId, loadId, commodityId, weight, sellerId, moisture) {
+function submitTxnContract(contract, contractId, loadId, commodityId, weight, sellerId, moisture, price) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Submit the transaction
-            const response = yield contract.submitTransaction('addLoad', contractId, loadId, commodityId, weight, sellerId, moisture);
+            const response = yield contract.submitTransaction('addLoad', contractId, loadId, commodityId, weight, sellerId, moisture, price);
             console.log('Submit Response=', response.toString());
             if (response.toString().startsWith('ERROR:')) {
                 throw Error(response.toString());
@@ -76,7 +92,7 @@ function submitTxnContract(contract, contractId, loadId, commodityId, weight, se
  * Creates the transaction & uses the submit function
  * @param {object} contract
  */
-function submitTxnTransaction(contract, contractId, loadId, commodityId, weight, sellerId, moisture) {
+function submitTxnTransaction(contract, contractId, loadId, commodityId, weight, sellerId, moisture, price) {
     return __awaiter(this, void 0, void 0, function* () {
         // Provide the function name
         const txn = contract.createTransaction('addLoad');
@@ -87,7 +103,7 @@ function submitTxnTransaction(contract, contractId, loadId, commodityId, weight,
         //console.log(txn.getTransactionID())
         // Submit the transaction
         try {
-            const response = yield txn.submit(contractId, loadId, commodityId, weight, sellerId, moisture);
+            const response = yield txn.submit(contractId, loadId, commodityId, weight, sellerId, moisture, price);
             console.log('Transaction.submit()=', response.toString());
             console.log('Transaction ID: ', txnID);
             return JSON.parse(`{"txnId":"${txnID}"}`);

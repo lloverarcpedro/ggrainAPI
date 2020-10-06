@@ -22,14 +22,14 @@ const addLoadToContract = async (req: Request): Promise<string> => {
     const contract = await getContract(NETWORK_NAME, CONTRACT_ID, USER_ID, CONTRACT_NAME)
 
     // 4. Execute the transaction
-    const contractSubmit = await submitTxnContract(contract, contractId, loadId, commodityId, weight, sellerId, moisture, price)
+    const contractSubmit = await submitTxnContract(contract, contractId, loadId, commodityId, weight, moisture, price)
     if(contractSubmit.toString().startsWith('ERROR:')){
         throw Error(contractSubmit.toString())
     }
     // Must give delay or use await here otherwise Error=MVCC_READ_CONFLICT
 
     // 5. submitTxnTransaction
-    return await submitTxnTransaction(contract, contractId, loadId, commodityId, weight, sellerId, moisture, price )
+    return await submitTxnTransaction(contract, contractId, loadId, commodityId, weight, moisture, price )
 
 }
 
@@ -70,10 +70,10 @@ const getPrivateLoad = async (req: Request, contractId: string, loadId: string):
  * Submit the transaction
  * @param {object} contract 
  */
-async function submitTxnContract(contract: Contract, contractId: string, loadId: string, commodityId: string, weight: string, sellerId: string, moisture: string, price: string) {
+async function submitTxnContract(contract: Contract, contractId: string, loadId: string, commodityId: string, weight: string, moisture: string, price: string) {
     try {
         // Submit the transaction
-        const response = await contract.submitTransaction('addLoad',contractId, loadId, commodityId, weight, sellerId, moisture, price)
+        const response = await contract.submitTransaction('addLoad',contractId, loadId, commodityId, weight, moisture, price)
         console.log('Submit Response=', response.toString())
         if(response.toString().startsWith('ERROR:')){
             throw Error(response.toString())
@@ -90,7 +90,7 @@ async function submitTxnContract(contract: Contract, contractId: string, loadId:
  * Creates the transaction & uses the submit function
  * @param {object} contract 
  */
-async function submitTxnTransaction(contract: Contract, contractId: string, loadId: string, commodityId: string, weight: string, sellerId: string, moisture: string, price: string) {
+async function submitTxnTransaction(contract: Contract, contractId: string, loadId: string, commodityId: string, weight: string, moisture: string, price: string) {
     // Provide the function name
     const txn = contract.createTransaction('addLoad')
 
@@ -103,7 +103,7 @@ async function submitTxnTransaction(contract: Contract, contractId: string, load
 
     // Submit the transaction
     try {
-        const response = await txn.submit(contractId, loadId, commodityId, weight, sellerId, moisture, price)
+        const response = await txn.submit(contractId, loadId, commodityId, weight, moisture, price)
         console.log('Transaction.submit()=', response.toString())
         console.log('Transaction ID: ', txnID)
         return JSON.parse(`{"txnId":"${txnID}"}`)

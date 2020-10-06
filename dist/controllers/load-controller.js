@@ -43,4 +43,21 @@ const getLoad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
-exports.default = { addLoad, getLoad };
+const getPrivLoad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const loadId = req.params.loadId;
+        const contractId = req.params.contractId;
+        const result = yield loads_services_1.getPrivateLoad(req, contractId, loadId);
+        res.send({
+            status: 'OK',
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(500).send({
+            status: 'error',
+            message: `An Error occurred: ${error.message}`
+        });
+    }
+});
+exports.default = { addLoad, getLoad, getPrivLoad };
